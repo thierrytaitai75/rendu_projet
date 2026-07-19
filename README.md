@@ -143,7 +143,6 @@ Conventions utilisées :
 |--------|-------------|
 | Python | Analyse exploratoire |
 | Pandas | Manipulation des données |
-| NumPy | Calculs |
 | Matplotlib | Visualisations |
 | SQL | Calcul des KPI |
 | Google BigQuery | Source de données |
