@@ -183,29 +183,7 @@ jupyter notebook
 
 Les différentes étapes doivent être exécutées dans l'ordre suivant.
 
-## 1. Extraction du sous-périmètre
-
-Exécuter la requête
-
-```
-sql/extract_sous_perimetre.sql
-```
-
-Cette requête extrait le périmètre :
-
-- France
-- Women
-- 2023–2024
-
-Le résultat est exporté dans
-
-```
-data/thelook_fr_women_2023_2024.csv
-```
-
----
-
-## 2. Analyse exploratoire
+## 1. Analyse exploratoire
 
 Exécuter
 
@@ -226,7 +204,7 @@ Ce notebook réalise :
 
 ---
 
-## 3. Contrôles complémentaires
+## 2. Contrôles complémentaires
 
 Exécuter
 
@@ -242,6 +220,27 @@ Ce notebook permet :
 
 ---
 
+## 3. Extraction du sous-périmètre
+
+Exécuter la requête
+
+```
+sql/extract_sous_perimetre.sql
+```
+
+Cette requête extrait le périmètre :
+
+- France
+- Women
+- 2023–2024
+
+Le résultat est exporté dans
+
+```
+data/thelook_fr_women_2023_2024.csv
+```
+
+---
 ## 4. Validation SQL
 
 Les KPI sont recalculés directement depuis BigQuery grâce aux requêtes du dossier
