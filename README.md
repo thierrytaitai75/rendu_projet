@@ -87,30 +87,34 @@ Les requêtes SQL sont exécutées directement dans la console **BigQuery** (ou 
 
 L'ordre d'exécution est important : le notebook Python dépend d'un export CSV généré depuis BigQuery.
 
-1. **Créer le sous-périmètre (BigQuery)**
-   Exécuter `01_creation_vue_sous_perimetre.sql` → crée la vue `THELOOKECOMMERCE` appliquant les filtres du périmètre (voir section 2).
+Les volets **Python** et **SQL** s'appuient sur deux sources indépendantes du même périmètre métier (voir point de vigilance en section 2) et peuvent être déroulés dans n'importe quel ordre l'un par rapport à l'autre.
 
-2. **Générer le CSV pour l'analyse Python**
-   Exporter le résultat de la vue `THELOOKECOMMERCE` (BigQuery → "Export" ou requête `SELECT *`) au format CSV, et le placer dans un dossier `data/` sous le nom :
+### Volet Python (analyse exploratoire)
+
+1. **Récupérer le fichier CSV source**
+   Le fichier `thelook_fr_women_2023_2024.csv` est **fourni par l'organisme de formation** (photo du périmètre à un instant T). Il n'est pas généré ni exporté depuis la vue SQL. Le placer dans un dossier `data/` à la racine du projet :
    `data/thelook_fr_women_2023_2024.csv`
    *(chemin attendu par le notebook : `../data/thelook_fr_women_2023_2024.csv`)*
 
-3. **Lancer l'analyse exploratoire (Python)**
-   Ouvrir et exécuter `01_EDA_python.ipynb` dans l'ordre des cellules :
+2. **Lancer l'analyse exploratoire**
+   Ouvrir et exécuter `01_EDA_python.ipynb` dans l'ordre des cellules, en s'appuyant sur ce CSV fourni :
    - chargement et audit du dataset (dictionnaire de colonnes, valeurs manquantes, doublons)
    - contrôle qualité (cohérence des dates, cohérence statut commande/produit)
    - retraitement (suppression des résidus 2022, typage des dates, ajout mois/année)
    - analyse descriptive et calcul des KPI en Python (fonctions `contribution()` et `kpi()`)
    - visualisations (saisonnalité, comparaison 2023 vs 2024)
 
-4. **Créer la table de reporting (BigQuery)**
-   Exécuter `02_creation_table_temporaire.sql` → crée la table `OBSERVATION2023_2024` (une ligne par année, colonnes KPI initialisées).
+### Volet SQL (BigQuery)
 
-5. **Calculer les KPI (BigQuery)**
-   Exécuter `03_calcul_kpi.sql` dans l'ordre du fichier → met à jour successivement : progression mensuelle, CA/marge/panier moyen, taux de retour, taux de réachat, taux d'annulation.
+Exécuter les 3 fichiers SQL **dans l'ordre**, chacun s'appuyant sur le précédent :
 
-6. **Construire/rafraîchir le dashboard Power BI**
-   Ouvrir `renduprojet.pbix` dans Power BI Desktop et rafraîchir la connexion vers la table BigQuery `OBSERVATION2023_2024` (et/ou la vue `THELOOKECOMMERCE` pour le détail des ventes) via le connecteur BigQuery natif de Power BI.
+1. `01_creation_vue_sous_perimetre.sql` → crée la vue `THELOOKECOMMERCE`, qui reconstruit le sous-périmètre (filtres, jointures — voir section 2) et sert de table maître aux deux fichiers suivants.
+2. `02_creation_table_temporaire.sql` → crée la table `OBSERVATION2023_2024` (une ligne par année, colonnes KPI initialisées), alimentée à partir de la vue précédente.
+3. `03_calcul_kpi.sql` → met à jour successivement les colonnes de `OBSERVATION2023_2024` : progression mensuelle, CA/marge/panier moyen, taux de retour, taux de réachat, taux d'annulation.
+
+### Volet Power BI
+
+Ouvrir `renduprojet.pbix` dans Power BI Desktop, la source de données est le même fichier utilisé pour l'analyse python.
 
 ---
 
@@ -157,7 +161,7 @@ L'ordre d'exécution est important : le notebook Python dépend d'un export CSV 
 ├── powerbi/
 │   └── renduprojet.pbix
 ├── slides/
-│   └── Soutenance_TheLook_DataAnalyst.pptx
+│   └── Soutenance_TheLook_DataAnalyst_sobre.pptx
 └── README.md
 ```
 
